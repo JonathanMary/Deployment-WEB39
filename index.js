@@ -11,3 +11,8 @@ if (process.env.NODE_ENV !== 'production') { //on Heroku, an env variable is cal
     const cors = require('cors');
     server.use(cors());
 }
+
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+    console.log(`listening on ${PORT}`);
+})
