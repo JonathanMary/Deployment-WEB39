@@ -1,10 +1,12 @@
 console.log("It's ON!")
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 
 const server = express();
 
 server.use(express.json());
+server.use(express.static(path.join(__dirname, 'client/build'))) //absolute path to dirname, regardless of machinenpm i
 
 console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV !== 'production') { //on Heroku, an env variable is called "NODE_ENV" -> "production"
@@ -12,8 +14,14 @@ if (process.env.NODE_ENV !== 'production') { //on Heroku, an env variable is cal
     server.use(cors());
 }
 
+// our API comes earlier in the pipeline
+server.get('/api/hello', (req, res) => {
+    res.json({ message: 'hello'});
+})
+
+// catch-all that just sends back index.html
 server.use('*', (req, res) => {
-    res.send('<h1>It works!</h1>');
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 })
 
 const PORT = process.env.PORT || 4000;
